@@ -9,7 +9,7 @@ public class Mover : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		rb = GetComponent<Rigidbody> ();
-		// Set the movement of the bolt laser 
+		// Set the movement speed
 		rb.velocity = transform.forward * speed;
 	}
 	

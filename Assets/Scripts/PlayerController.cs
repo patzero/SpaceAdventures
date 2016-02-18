@@ -20,7 +20,7 @@ public class PlayerController : MonoBehaviour {
 
 	public GameObject shot;
 	public Transform shotSpawn;
-	public Transform   shotSpawn2;
+	public Transform shotSpawn2;
 	public Transform shotSpawn3;
 	public Transform shotSpawn4;
 	public Transform shotSpawn5;
