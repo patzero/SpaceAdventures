@@ -3,7 +3,7 @@ using System.Collections;
 
 public class Mover : MonoBehaviour {
 
-	private Rigidbody rb;
+	public Rigidbody rb;
 	public float speed;
 
 	// Use this for initialization
@@ -13,5 +13,9 @@ public class Mover : MonoBehaviour {
 		rb.velocity = transform.forward * speed;
 	}
 	
+    /*public static void moveTest(Vector2 currentTouchPosition)
+    {
+        rb.position = currentTouchPosition;
+    }*/
 
 }
