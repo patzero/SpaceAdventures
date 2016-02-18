@@ -8,6 +8,7 @@ public class SimpleTouchPad : MonoBehaviour, IPointerDownHandler, IDragHandler, 
 	public float smoothing;
 
 	private Vector2 origin;
+    private Vector2 currentPosition;
 	private Vector2 direction;
 	private Vector2 smoothDirection;
 	private bool touched;
@@ -31,10 +32,10 @@ public class SimpleTouchPad : MonoBehaviour, IPointerDownHandler, IDragHandler, 
 	public void OnDrag (PointerEventData data) {
 		// Compare the difference between our start point and current pointer position
 		if (data.pointerId == pointerID) {
-			Vector2 currentPosition = data.position;
+			currentPosition = data.position;
 			Vector2 directionRaw = currentPosition - origin;
 			direction = directionRaw.normalized;
-		}
+        }
 	}
 
 	public void OnPointerUp (PointerEventData data) {
@@ -45,9 +46,21 @@ public class SimpleTouchPad : MonoBehaviour, IPointerDownHandler, IDragHandler, 
 		}
 	}
 
-	public Vector2 GetDirection() {
-		smoothDirection = Vector2.MoveTowards (smoothDirection, direction, smoothing);
+	/*public Vector2 GetDirection() {
+		smoothDirection = Vector2.MoveTowards(smoothDirection, direction, smoothing);
 		return direction;
-	}
-		
+	}*/
+
+    public Vector2 GetPosition()
+    {
+        /*Vector3 res = new Vector3(0, 0, 0);
+        var originInWorl = Camera.main.ScreenToWorldPoint(new Vector3(origin.x, origin.y, 10.0f));
+
+        if (originInWorl.x < fauconPositionInWorld.x + 1 && originInWorl.x > fauconPositionInWorld.x - 1 && originInWorl.z < fauconPositionInWorld.z + 1 && originInWorl.z > fauconPositionInWorld.z - 1)
+            res = currentPosition;
+
+        return res;*/
+        return currentPosition;
+    }
+
 }

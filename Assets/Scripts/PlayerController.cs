@@ -10,7 +10,7 @@ public class Boundary
 public class PlayerController : MonoBehaviour {
 
 	private Rigidbody rb;
-	private AudioSource audio;
+	private AudioSource audioPlayer;
 	private float nextFire;
 	private Quaternion calibrationQuaternion;
 
@@ -26,11 +26,11 @@ public class PlayerController : MonoBehaviour {
 	public Transform shotSpawn5;
 	public Transform shotSpawn6;
 	public float fireRate;
-	public  SimpleTouchPad touchPad;
+	public SimpleTouchPad touchPad;
 
 	void Start () {
 		rb = GetComponent<Rigidbody> ();
-		audio = GetComponent<AudioSource> ();
+		audioPlayer = GetComponent<AudioSource> ();
 	}
 
 	//Used to calibrate the Input.acceleration input
@@ -56,7 +56,7 @@ public class PlayerController : MonoBehaviour {
 //			Instantiate(shot, shotSpawn4.position, shotSpawn4.rotation);
 //			Instantiate(shot, shotSpawn5.position, shotSpawn5.rotation);
 //			Instantiate(shot, shotSpawn6.position, shotSpawn6.rotation);
-			audio.Play();
+			audioPlayer.Play();
 		}
 	}
 
@@ -70,36 +70,70 @@ public class PlayerController : MonoBehaviour {
 		//Vector3 accelerationRaw = Input.acceleration;
 		//Vector3 acceleration = FixAcceleration (accelerationRaw);
 
-		Vector2 direction = touchPad.GetDirection ();
-		Vector3 movement = new Vector3 (direction.x, 0.0f, direction.y);
+		//Vector2 direction = touchPad.GetDirection();
+		//Vector3 movement = new Vector3 (direction.x, 0.0f, direction.y);
+
+		//rb.velocity = movement * speed;
+        var data = touchPad.GetPosition();
+        //Debug.Log("touch_x: " + data.x);
+        //Debug.Log("touch_y: " + data.y);
+        //Debug.Log("faucon_x: " + rb.position.x);
+        //Debug.Log("faucon_z: " + rb.position.z);
+        //Debug.Log("boundary.xMin: " + boundary.xMin);
+        //Debug.Log("boundary.xMax: " + boundary.xMax);
+        //Debug.Log("boundary.zMin: " + boundary.zMin);
+        //Debug.Log("boundary.zMax: " + boundary.zMax);
+
+        //if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Moved)
+        //{
+
+        if (data.x > 0 || data.y > 0)
+        {
+            var worldPos = Camera.main.ScreenToWorldPoint(new Vector3(data.x, data.y, 10.0f));
+            Debug.Log("worldPos.z: " + worldPos.z);
+            Debug.Log("worldPos.x: " + worldPos.x);
+            //Debug.Log("rb.position.x: " + rb.position.x);
+            //if (worldPos.x < rb.position.x + 1 && worldPos.x > rb.position.x - 1 && worldPos.z < rb.position.z + 1 && worldPos.z > rb.position.z - 1)
+                rb.position = worldPos;
+        }
+            
+        //}
+            
 
 
-//		if (Input.touchCount > 0) {
-//			// The screen has been touched so store the touch
-//			Touch touch = Input.GetTouch(0);
-//			if (touch.phase == TouchPhase.Stationary || touch.phase == TouchPhase.Moved) {
-//				// If the finger is on the screen, move the object smoothly to the touch position
-//				Plane plane = new Plane(Vector3.up, transform.position);
-//				Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
-//				float dist;
-//				if (plane.Raycast (ray, out dist)) {
-//					transform.position = ray.GetPoint (dist);
-//				}
-//			}
-//		}
 
-		rb.velocity = movement * speed;
-
-		// Limite the ship position to not going outside of game field
-		// by clamp the x and z values of the ship to boundary min and max values
-		rb.position = new Vector3 (
+        // Limite the ship position to not going outside of game field
+        // by clamp the x and z values of the ship to boundary min and max values
+        /*rb.position = new Vector3 (
 			Mathf.Clamp (rb.position.x, boundary.xMin, boundary.xMax),
 			0.0f,
 			Mathf.Clamp (rb.position.z, boundary.zMin, boundary.zMax)
-		);
+		);*/
+        /*var cam = new Camera();
+        if (cam != null)
+        {
+            rb.position = cam.ScreenToWorldPoint(new Vector3(
+            Mathf.Clamp(data.x, boundary.xMin, boundary.xMax),
+            0.0f,
+            Mathf.Clamp(data.y, boundary.zMin, boundary.zMax)
+        ));
+        }*/
 
-		// Rotate the ship body when in movement left or right
-		rb.rotation = Quaternion.Euler (0.0f, 0.0f, rb.velocity.x * -tilt);
+        /*if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Moved)
+        {
+            // Get movement of the finger since last frame
+            Vector2 touchDeltaPosition = Input.GetTouch(0).deltaPosition;
+            Vector3 touchPosition = new Vector3(Mathf.Clamp(touchDeltaPosition.x, boundary.xMin, boundary.xMax), transform.position.y, Mathf.Clamp(touchDeltaPosition.y, boundary.zMin, boundary.zMax));
+            //touchPosition.Set();
+            // Move object across XY plane
+            transform.position = Vector3.Lerp(transform.position, touchPosition, Time.deltaTime * speed);
+                                        rb.position = transform.position;
+        }*/
+
+
+
+        // Rotate the ship body when in movement left or right
+        rb.rotation = Quaternion.Euler (0.0f, 0.0f, rb.velocity.x * -tilt);
 	}
 }
  
