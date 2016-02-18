@@ -4,7 +4,7 @@ using System.Collections;
 
 public class GameController : MonoBehaviour
 {
-	public GameObject hazard;
+	public GameObject[] hazards;
 	public Vector3 spawnValues;
 	public int hazardCount;
 	public float spawnWait;
@@ -57,11 +57,13 @@ public class GameController : MonoBehaviour
 		{
 			for (int i = 0; i < hazardCount; i++)
 			{
+				GameObject hazard = hazards[Random.Range (0, hazards.Length)];
+		
 				// Create the position random between the edge of game screen
 				Vector3 spawnPosition = new Vector3 (Random.Range (-spawnValues.x, spawnValues.x), spawnValues.y, spawnValues.z);
 				Quaternion spawnRotation = Quaternion.identity;
 				Instantiate (hazard, spawnPosition, spawnRotation);
-				// Wait time for each ateroid spawn
+				// Wait time for each asteroid spawn
 				yield return new WaitForSeconds (spawnWait);
 			}
 			// Wait time for each wave  
