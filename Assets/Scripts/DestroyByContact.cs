@@ -46,15 +46,13 @@ public class DestroyByContact : MonoBehaviour {
 
 		if (other.tag == "Bolt" && !this.isDead)
 		{
+            // variable used for increment score just to 10
             this.isDead = true;
 			// Add score after destroy
 			gameController.AddScore (scoreValue);
-            Debug.Log("Score+10");
         }
 
 		Destroy(other.gameObject);
 		Destroy(gameObject);
-
-		Debug.Log ("Touche");
 	}
 }
