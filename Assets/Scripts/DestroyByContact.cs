@@ -7,6 +7,7 @@ public class DestroyByContact : MonoBehaviour {
 	public GameObject playerExplosion ;
 	public int scoreValue;
 	private GameController gameController;
+    private bool isDead = false;
 
 	void Start ()
 	{
@@ -43,11 +44,13 @@ public class DestroyByContact : MonoBehaviour {
 			gameController.GameOver ();
 		}
 
-		if (other.tag == "Bolt")
+		if (other.tag == "Bolt" && !this.isDead)
 		{
+            this.isDead = true;
 			// Add score after destroy
 			gameController.AddScore (scoreValue);
-		}
+            Debug.Log("Score+10");
+        }
 
 		Destroy(other.gameObject);
 		Destroy(gameObject);
