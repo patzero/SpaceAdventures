@@ -19,4 +19,8 @@ public class BGScroller : MonoBehaviour
 		float newPosition = Mathf.Repeat (Time.time * scrollSpeed, tileSizeZ);
 		transform.position = startPosition + Vector3.forward * newPosition;
 	}
+
+	public void SetScrollSpeed(float speed) {
+		scrollSpeed = speed;
+	}
 }

@@ -94,7 +94,7 @@ public class PlayerController : MonoBehaviour {
             Debug.Log("worldPos.x: " + worldPos.x);
             //Debug.Log("rb.position.x: " + rb.position.x);
             //if (worldPos.x < rb.position.x + 1 && worldPos.x > rb.position.x - 1 && worldPos.z < rb.position.z + 1 && worldPos.z > rb.position.z - 1)
-                rb.position = worldPos;
+            	rb.position = worldPos;
         }
             
         //}
@@ -104,11 +104,11 @@ public class PlayerController : MonoBehaviour {
 
         // Limite the ship position to not going outside of game field
         // by clamp the x and z values of the ship to boundary min and max values
-        /*rb.position = new Vector3 (
+        rb.position = new Vector3 (
 			Mathf.Clamp (rb.position.x, boundary.xMin, boundary.xMax),
 			0.0f,
 			Mathf.Clamp (rb.position.z, boundary.zMin, boundary.zMax)
-		);*/
+		);
         /*var cam = new Camera();
         if (cam != null)
         {

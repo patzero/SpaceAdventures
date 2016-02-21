@@ -29,13 +29,16 @@ public class DestroyByContact : MonoBehaviour {
 	void OnTriggerEnter(Collider other) 
 	{
 		// Exclude if this is the boundary object 
-		if (other.tag == "Boundary")
+		if (other.tag == "Boundary" || other.tag == "Enemy")
 		{
 			return;
 		}
 
 		// Instanciate the explosion for the asteroid 
-		Instantiate(explosion, transform.position, transform.rotation);
+		if (explosion != null)
+		{
+			Instantiate (explosion, transform.position, transform.rotation);
+		}
 
 		// Instanciate the explosion for the player 
 		if (other.tag == "Player")

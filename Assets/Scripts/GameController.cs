@@ -10,12 +10,15 @@ public class GameController : MonoBehaviour
 	public float spawnWait;
 	public float startWait;
 	public float waveWait;
+	public float warpTime;
 
 	public Text scoreText;
 	//public Text restartText;
 	public Text gameOverText;
 
 	public GameObject restartButton;
+	public GameObject backgroundObject;
+	private BGScroller bgScroller;
 
 	private bool gameOver;
 	private bool restart;
@@ -31,6 +34,17 @@ public class GameController : MonoBehaviour
 		restartButton.SetActive (false); 
 		score = 0;
 		UpdateScore ();
+
+		// Get the game controller 
+		backgroundObject = GameObject.FindWithTag ("BackGround");
+		if (backgroundObject != null)
+		{
+			bgScroller = backgroundObject.GetComponent <BGScroller>();
+			backgroundObject.transform.localScale += new Vector3(0, 1400f, 0);
+			bgScroller.SetScrollSpeed (-10);
+		}
+			
+		StartCoroutine (HyperSpaceWarp ());
 		StartCoroutine (SpawnWaves ());
 	}
 
@@ -46,6 +60,14 @@ public class GameController : MonoBehaviour
 //		}
 //	}
 
+	IEnumerator HyperSpaceWarp ()
+	{
+		yield return new WaitForSeconds (warpTime);
+
+		backgroundObject.transform.localScale += new Vector3(0, -1400f, 0);
+		bgScroller.SetScrollSpeed (-1);
+
+	}
 	/**
 	 * Spawn a wave of asteroid 
 	 * */
