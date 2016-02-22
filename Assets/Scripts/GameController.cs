@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour
 {
@@ -17,6 +18,7 @@ public class GameController : MonoBehaviour
 	public Text gameOverText;
 
 	public GameObject restartButton;
+	public GameObject exitButton;
 	public GameObject backgroundObject;
 	private BGScroller bgScroller;
 
@@ -32,6 +34,7 @@ public class GameController : MonoBehaviour
 		//restartText.text = "";
 		gameOverText.text = ""; 
 		restartButton.SetActive (false); 
+		exitButton.SetActive (false);
 		score = 0;
 		UpdateScore ();
 
@@ -93,6 +96,8 @@ public class GameController : MonoBehaviour
 			if (gameOver)
 			{
 				restartButton.SetActive (true);
+				exitButton.SetActive (true);
+
 				// restartText.text = "Press 'R' for Restart";
 				restart = true;
 				break;
@@ -118,6 +123,6 @@ public class GameController : MonoBehaviour
 	}
 
 	public void RestartGame() {
-		Application.LoadLevel (Application.loadedLevel);  
+		SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
 	}
 }
