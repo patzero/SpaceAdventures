@@ -51,18 +51,6 @@ public class GameController : MonoBehaviour
 		StartCoroutine (SpawnWaves ());
 	}
 
-//	void Update ()
-//	{
-//		if (restart)
-//		{
-//			// Restart the game when press 'R'
-//			if (Input.GetKeyDown (KeyCode.R))
-//			{
-//				Application.LoadLevel (Application.loadedLevel);
-//			}
-//		}
-//	}
-
 	IEnumerator HyperSpaceWarp ()
 	{
 		yield return new WaitForSeconds (warpTime);
