@@ -21,10 +21,6 @@ public class PlayerController : MonoBehaviour {
 	public GameObject shot;
 	public Transform shotSpawn;
 	public Transform shotSpawn2;
-	public Transform shotSpawn3;
-	public Transform shotSpawn4;
-	public Transform shotSpawn5;
-	public Transform shotSpawn6;
 	public float fireRate;
 	public SimpleTouchPad touchPad;
 
@@ -90,11 +86,11 @@ public class PlayerController : MonoBehaviour {
         if (data.x > 0 || data.y > 0)
         {
             var worldPos = Camera.main.ScreenToWorldPoint(new Vector3(data.x, data.y, 10.0f));
-            Debug.Log("worldPos.z: " + worldPos.z);
-            Debug.Log("worldPos.x: " + worldPos.x);
+            //Debug.Log("worldPos.z: " + worldPos.z);
+            //Debug.Log("worldPos.x: " + worldPos.x);
             //Debug.Log("rb.position.x: " + rb.position.x);
             //if (worldPos.x < rb.position.x + 1 && worldPos.x > rb.position.x - 1 && worldPos.z < rb.position.z + 1 && worldPos.z > rb.position.z - 1)
-            	rb.position = worldPos;
+            rb.position = worldPos;
         }
             
         //}

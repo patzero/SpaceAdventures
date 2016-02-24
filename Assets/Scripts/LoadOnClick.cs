@@ -9,6 +9,6 @@ public class LoadOnClick : MonoBehaviour {
 	public void LoadScene(int level)
 	{
 		loadingImage.SetActive(true);
-		SceneManager.LoadScene (level);
+		SceneManager.LoadScene(level);
 	}
 }

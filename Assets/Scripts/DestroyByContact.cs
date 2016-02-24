@@ -6,16 +6,16 @@ public class DestroyByContact : MonoBehaviour {
 	public GameObject explosion;
 	public GameObject playerExplosion ;
 	public int scoreValue;
-	private GameController gameController;
+    private GameController gameController;
     private bool isDead = false;
 
 	void Start ()
 	{
 		// Get the game controller 
-		GameObject gameControllerObject = GameObject.FindWithTag ("GameController");
-		if (gameControllerObject != null)
+		GameObject gameObject = GameObject.FindWithTag ("GameController");
+		if (gameObject != null)
 		{
-			gameController = gameControllerObject.GetComponent <GameController>();
+			gameController = gameObject.GetComponent <GameController>();
 		}
 		if (gameController == null)
 		{
@@ -29,7 +29,7 @@ public class DestroyByContact : MonoBehaviour {
 	void OnTriggerEnter(Collider other) 
 	{
 		// Exclude if this is the boundary object 
-		if (other.tag == "Boundary" || other.tag == "Enemy")
+		if (other.tag == "Boundary" || other.tag == "Asteroid" || other.tag == "Enemy" || other.tag == "Bolt enemy")
 		{
 			return;
 		}
@@ -44,7 +44,7 @@ public class DestroyByContact : MonoBehaviour {
 		if (other.tag == "Player")
 		{
 			Instantiate(playerExplosion, other.transform.position, other.transform.rotation);
-			gameController.GameOver ();
+			gameController.GameOver();
 		}
 
 		if (other.tag == "Bolt" && !this.isDead)
@@ -52,10 +52,10 @@ public class DestroyByContact : MonoBehaviour {
             // variable used for increment score just to 10
             this.isDead = true;
 			// Add score after destroy
-			gameController.AddScore (scoreValue);
+			gameController.AddScore(scoreValue);
         }
 
-		Destroy(other.gameObject);
+        Destroy(other.gameObject);
 		Destroy(gameObject);
 	}
 }

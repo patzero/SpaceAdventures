@@ -8,6 +8,6 @@ public class DestroyByTime : MonoBehaviour
 	void Start ()
 	{
 		// Destroy the object after the lifttime 
-		Destroy (gameObject, lifetime);
+		Destroy(gameObject, lifetime);
 	}
 }
