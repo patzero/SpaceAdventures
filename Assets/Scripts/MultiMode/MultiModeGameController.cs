@@ -16,6 +16,7 @@ public class MultiModeGameController : NetworkBehaviour {
 	public Text scoreText;
 	//public Text restartText;
 	public Text gameOverText;
+	public GameObject loadingImage;
 
 	public GameObject restartButton;
 	public GameObject exitButton;
@@ -70,6 +71,7 @@ public class MultiModeGameController : NetworkBehaviour {
 		backgroundObject.transform.localScale += new Vector3(0, -1400f, 0);
 		bgScroller.SetScrollSpeed (-1);
 	}
+
 	/**
 	 * Spawn a wave of asteroid 
 	 * */
@@ -100,7 +102,7 @@ public class MultiModeGameController : NetworkBehaviour {
 				//restartButton.SetActive (true);
 				//exitButton.SetActive (true);
 				// restartText.text = "Press 'R' for Restart";
-				//break;
+				break;
 			}
 		}
 	}
@@ -112,7 +114,7 @@ public class MultiModeGameController : NetworkBehaviour {
 		Vector3 spawnPosition = new Vector3 (Random.Range (-spawnValues.x, spawnValues.x), spawnValues.y, spawnValues.z);
 		Quaternion spawnRotation = Quaternion.identity;
 		//GameObject enemy = Instantiate (hazard, spawnPosition, spawnRotation) as GameObject;
-		NetworkServer.Spawn ((GameObject)Instantiate (hazard, spawnPosition, spawnRotation));
+		//NetworkServer.Spawn ((GameObject)Instantiate (hazard, spawnPosition, spawnRotation));
 	}
 
 	public void AddScore (int newScoreValue)
@@ -126,10 +128,19 @@ public class MultiModeGameController : NetworkBehaviour {
 		scoreText.text = "Score: " + score;
 	} 
 
-	public void GameOver ()
+	[ClientRpc]
+	public void RpcGameOver ()
 	{
-		gameOverText.text = "Game Over!\nYou Lose";
+		//gameOverText.text = "Game Over!\nYou Lose";
 		gameOver = true;
+
+		// Load end scene
+		int endLevel = 0;
+		loadingImage.SetActive(true);
+		NetworkServer.Shutdown();
+
+
+		//SceneManager.LoadScene(endLevel);
 	}
 
 	public void RestartGame() {

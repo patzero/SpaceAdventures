@@ -23,13 +23,13 @@ public class MultiModeDestroyByContact : NetworkBehaviour {
 			Debug.Log ("Cannot find multi mode 'MultiModeGameController' script");
 		}
 
-		GameObject player = GameObject.FindWithTag ("Player");
+		/*GameObject player = GameObject.FindWithTag ("Player");
 		if (player != null) {
 			playerController = player.GetComponent <MultiModePlayerController>();
 		}
 		if (gameController == null) {
 			Debug.Log ("Cannot find multi mode 'MultiModePlayerController' script");
-		}
+		}*/
 	}
 
 	public override void OnNetworkDestroy ()
@@ -56,11 +56,22 @@ public class MultiModeDestroyByContact : NetworkBehaviour {
 		if (explosion != null) {
 			//Instantiate (explosion, transform.position, transform.rotation);
 			NetworkServer.Spawn ((GameObject)Instantiate (explosion, transform.position, transform.rotation));
+		}
 
+		if (other.tag == "Bolt" /*&& !this.isDead*/)
+		{
+			//this.isDead = true;
+			//var playerController = other.GetComponent <MultiModePlayerController>();
+			//playerController.AddScore (scoreValue);
+
+			Destroy(other.gameObject);
+			Destroy(gameObject);
+			return;
 		}
 
 		// Instanciate the explosion for the player 
 		if (other.tag == "Player") {
+
 			//gameController.AddScore (scoreValue);
 
 			// Check player health
@@ -72,22 +83,11 @@ public class MultiModeDestroyByContact : NetworkBehaviour {
 			if (playerHealth <= 0) {
 				GameObject explo = Instantiate(playerExplosion, transform.position, transform.rotation) as GameObject;
 				NetworkServer.Spawn (explo);
-				//gameController.GameOver ();
 				//Destroy(explo, 1.0f);
 				Destroy(other.gameObject);
+				gameController.RpcGameOver ();
+				//MasterServer.UnregisterHost ();
 			}
-			Destroy(gameObject);
-			return;
-		}
-
-		if (other.tag == "Bolt" /*&& !this.isDead*/)
-		{
-			// Variable used for increment score just to 10
-			//this.isDead = true;
-
-			// Add score 
-			playerController.AddScore (scoreValue);
-			Destroy(other.gameObject);
 			Destroy(gameObject);
 			return;
 		}

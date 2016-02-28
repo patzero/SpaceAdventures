@@ -7,7 +7,7 @@ public class Boundary
 	public float xMin, xMax, zMin, zMax;
 }
 
-public class PlayerController : MonoBehaviour {
+public class SinglePlayerController : MonoBehaviour {
 
 	private Rigidbody rb;
 	private AudioSource audioPlayer;

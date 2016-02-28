@@ -31,7 +31,9 @@ public class MultiModePlayerController : NetworkBehaviour {
 	[SyncVar(hook="OnScore")]
 	public int score = 0;
 
-	public string playerName = "Player";
+	[SyncVar]
+	public string playerName;
+
 	public Texture box;
 	public GameObject playerExplosion;
 
