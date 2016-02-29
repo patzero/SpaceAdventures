@@ -178,7 +178,7 @@ public class NetworkPlayer : NetworkBehaviour
 			//Debug.Log ("Got hit by bolt enemy");
 
 			//Hit by bolt enemy
-			TakeDamage (20);
+			TakeDamage (40);
 			MakePlayerExplosion ();
 		}
 	}
