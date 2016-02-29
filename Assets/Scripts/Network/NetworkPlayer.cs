@@ -71,13 +71,7 @@ public class NetworkPlayer : NetworkBehaviour
 		_collider = GetComponent<Collider>();
 		audioPlayer = GetComponent<AudioSource> ();
 	
-		/*Renderer[] rends = GetComponentsInChildren<Renderer>();
-		foreach (Renderer r in rends)
-			r.material.color = color;*/
-
-		//We don't want to handle collision on client, so disable collider there
 		_collider.enabled = isServer;
-
 
 		if (NetworkGameController.sInstance != null)
 		{//we MAY be awake late (see comment on _wasInit above), so if the instance is already there we init
@@ -116,21 +110,6 @@ public class NetworkPlayer : NetworkBehaviour
 		if (!isLocalPlayer || !_canControl)
 			return;
 
-		/*_rotation = Input.GetAxis("Horizontal");
-		_acceleration = Input.GetAxis("Vertical");
-
-
-		if(Input.GetButton("Jump") && _shootingTimer <= 0)
-		{
-			_shootingTimer = 0.2f;
-			//we call a Command, that will be executed only on server, to spawn a new bullet
-			//we pass the position&forward to be sure to shoot from the right one (server can lag one frame behind)
-			CmdFire(transform.position, transform.forward, _rigidbody.velocity);
-		}
-
-		if (_shootingTimer > 0)
-			_shootingTimer -= Time.deltaTime;*/
-
 		// Instancetiate the shot when the user press on fire button
 		if (Input.GetButton("Fire1") && Time.time > nextFire) {
 			CmdFire ();
@@ -153,17 +132,6 @@ public class NetworkPlayer : NetworkBehaviour
 		}
 		else
 		{
-			/*Quaternion rotation = _rigidbody.rotation * Quaternion.Euler(0, _rotation * rotationSpeed * Time.fixedDeltaTime, 0);
-			_rigidbody.MoveRotation(rotation);
-
-			_rigidbody.AddForce((rotation * Vector3.forward) * _acceleration * 1000.0f * speed * Time.deltaTime);
-
-			if (_rigidbody.velocity.magnitude > maxSpeed * 1000.0f)
-			{
-				_rigidbody.velocity = _rigidbody.velocity.normalized * maxSpeed * 1000.0f;
-			}
-
-			CheckExitScreen();*/
 
 			// Player Movement
 			float moveHorizontal =   Input.GetAxis ("Horizontal");
@@ -198,22 +166,6 @@ public class NetworkPlayer : NetworkBehaviour
 		}
 	}
 
-	[ClientCallback]
-	void OnCollisionEnter(Collision coll)
-	{
-		if (isServer)
-			return; // hosting client, server path will handle collision
-
-		//if not, we are on a client, so just disable the spaceship (& play destruction aprticle).
-		//This way client won't see it's destruction delayed (time for it to happen on server & message to get back)
-		/*NetworkAsteroid asteroid = coll.gameObject.GetComponent<NetworkAsteroid>();
-
-		if(asteroid != null)
-		{
-			LocalDestroy();
-		}*/
-	}
-
 	//[ClientCallback]
 	void OnTriggerEnter(Collider other)
 	{
@@ -226,29 +178,10 @@ public class NetworkPlayer : NetworkBehaviour
 			//Debug.Log ("Got hit by bolt enemy");
 
 			//Hit by bolt enemy
-			TakeDamage (10);
+			TakeDamage (20);
 			MakePlayerExplosion ();
 		}
 	}
-
-	void CheckExitScreen()
-	{
-		if (Camera.main == null)
-			return;
-
-		if (Mathf.Abs(_rigidbody.position.x) > Camera.main.orthographicSize * Camera.main.aspect)
-		{
-			_rigidbody.position = new Vector3(-Mathf.Sign(_rigidbody.position.x) * Camera.main.orthographicSize * Camera.main.aspect, 0, _rigidbody.position.z);
-			_rigidbody.position -= _rigidbody.position.normalized * 0.1f; // offset a little bit to avoid looping back & forth between the 2 edges 
-		}
-
-		if (Mathf.Abs(_rigidbody.position.z) > Camera.main.orthographicSize)
-		{
-			_rigidbody.position = new Vector3(_rigidbody.position.x , _rigidbody.position.y, -Mathf.Sign(_rigidbody.position.z) * Camera.main.orthographicSize);
-			_rigidbody.position -= _rigidbody.position.normalized * 0.1f; // offset a little bit to avoid looping back & forth between the 2 edges 
-		}
-	}
-
 
 	// --- Score & Life management & display
 	void OnScoreChanged(int newValue)
@@ -313,13 +246,6 @@ public class NetworkPlayer : NetworkBehaviour
 		GameObject explo = Instantiate(playerExplosion, transform.position, transform.rotation) as GameObject;
 		NetworkServer.Spawn(explo);
 
-
-		/*killParticle.transform.SetParent(null);
-		killParticle.transform.position = transform.position;
-		killParticle.gameObject.SetActive(true);
-		killParticle.Stop();
-		killParticle.Play();*/
-
 		if (!_canControl)
 			return;//already destroyed, happen if destroyed Locally, Rpc will call that later
 
@@ -362,20 +288,6 @@ public class NetworkPlayer : NetworkBehaviour
 
 	public void CreateBullets()
 	{
-		/*Vector3[] vectorBase = { _rigidbody.rotation * Vector3.right, _rigidbody.rotation * Vector3.up, _rigidbody.rotation * Vector3.forward };
-		Vector3[] offsets = { -1.5f * vectorBase[0] + -0.5f * vectorBase[2], 1.5f * vectorBase[0] + -0.5f * vectorBase[2] };
-
-		for (int i = 0; i < 2; ++i)
-		{
-			GameObject bullet = Instantiate(bulletPrefab, _rigidbody.position + offsets[i], Quaternion.identity) as GameObject;
-			NetworkSpaceshipBullet bulletScript = bullet.GetComponent<NetworkSpaceshipBullet>();
-
-			bulletScript.originalDirection = vectorBase[2]; 
-			bulletScript.owner = this;
-
-			//NetworkServer.SpawnWithClientAuthority(bullet, connectionToClient);
-		}*/
-
 		if (Time.time > nextFire) {
 			nextFire = Time.time + fireRate;
 			GameObject bolt1 = Instantiate(bolt, shotSpawn1.position, shotSpawn1.rotation) as GameObject;
@@ -385,12 +297,8 @@ public class NetworkPlayer : NetworkBehaviour
 			GameObject bolt2 = Instantiate(bolt, shotSpawn2.position, shotSpawn2.rotation) as GameObject;
 			NetworkBolt bolt2Script = bolt2.GetComponent<NetworkBolt>();
 			bolt2Script.owner = this;
-
 		
 			audioPlayer.Play ();
-
-			//NetworkServer.Spawn (missile1);
-			//NetworkServer.Spawn (missile2);
 		}
 	}
 
@@ -406,18 +314,18 @@ public class NetworkPlayer : NetworkBehaviour
 
 		// Draw heath bar bg
 		GUI.color = Color.grey;
-		GUI.DrawTexture(new Rect(pos.x - 35, Screen.height - pos.y + 35, 50, 7), box);
+		GUI.DrawTexture(new Rect(pos.x - 35, Screen.height - pos.y + 50, 50, 7), box);
 
 		// Draw hp
 		GUI.color = Color.green;
-		GUI.DrawTexture(new Rect(pos.x - 36, Screen.height - pos.y + 36, health/2, 5), box);
+		GUI.DrawTexture(new Rect(pos.x - 36, Screen.height - pos.y + 51, health/2, 5), box);
 
 		// Draw player name
 		GUI.color = Color.black;
-		GUI.Label(new Rect(pos.x - 30, Screen.height - pos.y + 40, 100, 30), playerName);
+		GUI.Label(new Rect(pos.x - 30, Screen.height - pos.y + 65, 100, 30), playerName);
 
 		GUI.color = color;
-		GUI.Label(new Rect(pos.x - 31, Screen.height - pos.y + 41, 100, 30), playerName);
+		GUI.Label(new Rect(pos.x - 31, Screen.height - pos.y + 66, 100, 30), playerName);
 
 		// Draw player score
 		/*GUI.color = Color.black;
@@ -428,22 +336,13 @@ public class NetworkPlayer : NetworkBehaviour
 
 		// Draw player score
 		GUI.color = Color.black;
-		GUI.Label(new Rect(pos.x - 30, Screen.height - pos.y + 55, 100, 30), "Score : " + score);
+		GUI.Label(new Rect(pos.x - 30, Screen.height - pos.y + 75, 100, 30), "Score : " + score);
 
 		GUI.color = Color.white;
-		GUI.Label(new Rect(pos.x - 31, Screen.height - pos.y + 56, 100, 30), "Score : " + score);
+		GUI.Label(new Rect(pos.x - 31, Screen.height - pos.y + 76, 100, 30), "Score : " + score);
 	}
 
 	// =========== NETWORK FUNCTIONS
-
-	/*[Command]
-	public void CmdFire(Vector3 position, Vector3 forward, Vector3 startingVelocity)
-	{
-		if (!isClient) //avoid to create bullet twice (here & in Rpc call) on hosting client
-			CreateBullets();
-
-		RpcFire();
-	}*/
 
 	[Command]
 	public void CmdFire()
@@ -466,8 +365,7 @@ public class NetworkPlayer : NetworkBehaviour
 	{
 		CreateBullets();
 	}
-
-
+		
 	//called on client when the player die, spawn the particle (this is only cosmetic, no need to do it on server)
 	[ClientRpc]
 	void RpcDestroyed()
@@ -479,16 +377,10 @@ public class NetworkPlayer : NetworkBehaviour
 	void RpcRespawn()
 	{
 		EnableSpaceShip(true);
-
-		//killParticle.gameObject.SetActive(false);
-		//killParticle.Stop();
 	}
 
 	public void MakePlayerExplosion() {
 		GameObject explo = Instantiate(playerExplosion, transform.position, transform.rotation) as GameObject;
-		//Destroy(gameObject);
-		//NetworkServer.Spawn(explo);
-		//NetworkServer.Destroy(gameObject);
 	}
 
 	[Command]
